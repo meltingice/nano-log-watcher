@@ -28,7 +28,7 @@ function streamLogFile(filename) {
 
   console.log(`Beginning stream of ${filename}`);
 
-  stream = fs.createReadStream(filename, { encoding: "utf8" });
+  stream = fs.createReadStream(`${LOG_DIR}/${filename}`, { encoding: "utf8" });
 
   stream.on("data", data => {
     gelf.emit("gelf.log", {
