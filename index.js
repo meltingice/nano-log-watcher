@@ -4,7 +4,7 @@ const Gelf = require("gelf");
 const config = {
   HOSTNAME: os.hostname(),
   LOG_DIR: "/home/ryanlefevre/RaiBlocks/log",
-  RPC_ADDRESS: process.env.RPC_ADDRESS || "127.0.0.1:7076"
+  RPC_URL: process.env.RPC_ADDRESS || "http://127.0.0.1:7076"
 };
 
 const gelf = new Gelf({
@@ -14,5 +14,7 @@ const gelf = new Gelf({
 });
 
 const Logs = require("./lib/logs")(gelf, config);
+const RPC = require("./lib/rpc")(gelf, config);
 
 Logs.start();
+RPC.start();
