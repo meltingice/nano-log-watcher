@@ -19,7 +19,7 @@ function watchForNewLogFile() {
   fs.watch(LOG_DIR, { encoding: "utf8" }, (eventType, filename) => {
     if (filename && eventType === "rename" && /^log_/.test(filename)) {
       console.log("New log file detected!");
-      changeLogFile(filename);
+      streamLogFile(filename);
     }
   });
 }
