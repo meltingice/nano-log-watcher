@@ -31,12 +31,14 @@ function streamLogFile(filename) {
   stream = fs.createReadStream(`${LOG_DIR}/${filename}`, { encoding: "utf8" });
 
   stream.on("data", data => {
-    gelf.emit("gelf.log", {
-      version: "1.1",
-      host: HOSTNAME,
-      short_message: data,
-      timestamp: Math.floor(new Date().getTime() / 1000),
-      level: 7
+    data.split("\n").forEach(line => {
+      gelf.emit("gelf.log", {
+        version: "1.1",
+        host: HOSTNAME,
+        short_message: line,
+        timestamp: Math.floor(new Date().getTime() / 1000),
+        level: 7
+      });
     });
   });
 }
