@@ -3,8 +3,7 @@ const Gelf = require("gelf");
 
 const config = {
   HOSTNAME: os.hostname(),
-  RAIBLOCKS_DIR: "/home/ryanlefevre/RaiBlocks",
-  LOG_DIR: `${RAIBLOCKS_DIR}/log`,
+  LOG_DIR: "/home/ryanlefevre/RaiBlocks/log",
   RPC_ADDRESS: process.env.RPC_ADDRESS || "127.0.0.1:7076"
 };
 
