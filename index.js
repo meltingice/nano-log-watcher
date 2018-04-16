@@ -29,21 +29,26 @@ function streamLogFile(filename) {
 
   console.log(`Beginning stream of ${filename}`);
 
-  stream = new Tail(`${LOG_DIR}/${filename}`);
+  try {
+    stream = new Tail(`${LOG_DIR}/${filename}`);
 
-  stream.on("line", line => {
-    gelf.emit("gelf.log", {
-      version: "1.1",
-      host: HOSTNAME,
-      short_message: line,
-      timestamp: Math.floor(new Date().getTime() / 1000),
-      level: 7
+    stream.on("line", line => {
+      gelf.emit("gelf.log", {
+        version: "1.1",
+        host: HOSTNAME,
+        short_message: line,
+        timestamp: Math.floor(new Date().getTime() / 1000),
+        level: 7
+      });
     });
-  });
 
-  stream.on("error", error => {
-    console.log("ERROR: ", error);
-  });
+    stream.on("error", error => {
+      console.log("ERROR: ", error);
+    });
+  } catch (e) {
+    console.log("Error attempting to watch log file, retrying...");
+    setTimeout(() => streamLogFile(filename), 1);
+  }
 }
 
 const files = fs.readdirSync(LOG_DIR);
