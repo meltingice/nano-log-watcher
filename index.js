@@ -37,17 +37,20 @@ function streamLogFile(filename, isRetry) {
   });
 
   stream.on("data", data => {
-    data.split("\n").forEach(line => {
-      if (!line) return;
+    data
+      .toString()
+      .split("\n")
+      .forEach(line => {
+        if (!line) return;
 
-      gelf.emit("gelf.log", {
-        version: "1.1",
-        host: HOSTNAME,
-        short_message: line,
-        timestamp: Math.floor(new Date().getTime() / 1000),
-        level: 7
+        gelf.emit("gelf.log", {
+          version: "1.1",
+          host: HOSTNAME,
+          short_message: line,
+          timestamp: Math.floor(new Date().getTime() / 1000),
+          level: 7
+        });
       });
-    });
   });
 
   stream.on("error", error => {
