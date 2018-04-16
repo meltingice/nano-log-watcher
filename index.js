@@ -9,7 +9,7 @@ const LOG_DIR = `${RAIBLOCKS_DIR}/log`;
 var stream = null;
 
 const gelf = new Gelf({
-  graylogPort: process.env.GRAYLOG_PORT,
+  graylogPort: process.env.GRAYLOG_PORT || 12201,
   graylogHostname: process.env.GRAYLOG_HOST,
   connection: "lan"
 });
