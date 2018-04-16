@@ -1,6 +1,6 @@
 var os = require("os");
 var fs = require("fs");
-const Tail = require("tail").Tail;
+const ts = require("tail-stream");
 const Gelf = require("gelf");
 
 const HOSTNAME = os.hostname();
@@ -24,15 +24,22 @@ function watchForNewLogFile() {
   });
 }
 
-function streamLogFile(filename) {
-  if (stream) stream.unwatch();
+function streamLogFile(filename, isRetry) {
+  if (stream) stream.destroy();
 
   console.log(`Beginning stream of ${filename}`);
 
-  try {
-    stream = new Tail(`${LOG_DIR}/${filename}`);
+  stream = ts.createReadStream(`${LOG_DIR}/${filename}`, {
+    onMove: "end",
+    detectTruncate: false,
+    endOnError: true,
+    waitForCreate: true
+  });
 
-    stream.on("line", line => {
+  stream.on("data", data => {
+    data.split("\n").forEach(line => {
+      if (!line) return;
+
       gelf.emit("gelf.log", {
         version: "1.1",
         host: HOSTNAME,
@@ -41,14 +48,11 @@ function streamLogFile(filename) {
         level: 7
       });
     });
+  });
 
-    stream.on("error", error => {
-      console.log("ERROR: ", error);
-    });
-  } catch (e) {
-    console.log("Error attempting to watch log file, retrying...");
-    setTimeout(() => streamLogFile(filename), 1);
-  }
+  stream.on("error", error => {
+    console.log("ERROR: ", error);
+  });
 }
 
 const files = fs.readdirSync(LOG_DIR);
