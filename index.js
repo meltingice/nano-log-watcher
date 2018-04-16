@@ -40,6 +40,10 @@ function streamLogFile(filename) {
       level: 7
     });
   });
+
+  stream.on("error", error => {
+    console.log("ERROR: ", error);
+  });
 }
 
 const files = fs.readdirSync(LOG_DIR);
