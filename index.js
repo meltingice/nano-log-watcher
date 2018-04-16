@@ -1,5 +1,6 @@
 var os = require("os");
 var fs = require("fs");
+const Tail = require("tail").Tail;
 const Gelf = require("gelf");
 
 const HOSTNAME = os.hostname();
@@ -24,21 +25,19 @@ function watchForNewLogFile() {
 }
 
 function streamLogFile(filename) {
-  if (stream) stream.destroy();
+  if (stream) stream.unwatch();
 
   console.log(`Beginning stream of ${filename}`);
 
-  stream = fs.createReadStream(`${LOG_DIR}/${filename}`, { encoding: "utf8" });
+  stream = new Tail(`${LOG_DIR}/${filename}`);
 
-  stream.on("data", data => {
-    data.split("\n").forEach(line => {
-      gelf.emit("gelf.log", {
-        version: "1.1",
-        host: HOSTNAME,
-        short_message: line,
-        timestamp: Math.floor(new Date().getTime() / 1000),
-        level: 7
-      });
+  stream.on("line", data => {
+    gelf.emit("gelf.log", {
+      version: "1.1",
+      host: HOSTNAME,
+      short_message: line,
+      timestamp: Math.floor(new Date().getTime() / 1000),
+      level: 7
     });
   });
 }

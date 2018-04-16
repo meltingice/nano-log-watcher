@@ -2,7 +2,8 @@
   "name": "nano-log-watcher",
   "version": "0.0.1",
   "dependencies": {
-    "gelf": "^2.0.1"
+    "gelf": "^2.0.1",
+    "tail": "^1.2.3"
   },
   "main": "./index.js"
 }
