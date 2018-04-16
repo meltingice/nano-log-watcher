@@ -31,7 +31,7 @@ function streamLogFile(filename) {
 
   stream = new Tail(`${LOG_DIR}/${filename}`);
 
-  stream.on("line", data => {
+  stream.on("line", line => {
     gelf.emit("gelf.log", {
       version: "1.1",
       host: HOSTNAME,
