@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "dependencies": {
     "gelf": "^2.0.1",
+    "node-fetch": "^2.1.2",
     "tail-stream": "^0.3.4"
   },
   "main": "./index.js"
